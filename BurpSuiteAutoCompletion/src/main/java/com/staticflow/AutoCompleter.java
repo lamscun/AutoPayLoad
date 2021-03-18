@@ -12,6 +12,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+
 /**
  * This class handles the autocomplete. it keeps a reference to the JTextArea is autocompletes for and generates a list
  * of possible candidates, updated after every letter typed.
@@ -64,17 +65,21 @@ public class AutoCompleter implements DocumentListener, CaretListener{
         this.source.addCaretListener(this);
         
         suggestionPane = new JFrame();
-        suggestionPane.setSize(250,250);
-        suggestionPane.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        suggestionPane.setSize(350,250);
+        suggestionPane.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         suggestionPane.setUndecorated(true);
         suggestionPane.setAutoRequestFocus(false);
         JPanel pane = new JPanel(new BorderLayout());
         JList<String> suggestions = new JList<>(suggestionsModel);
         JScrollPane scroller = new JScrollPane(suggestions);
         pane.add(scroller, BorderLayout.CENTER);
-        suggestionPane.add(pane);
+        suggestionPane.getContentPane().add(pane);
         //Double clicks will pick the autocompletion to commit to
         suggestions.addMouseListener(new MouseAdapter() {
+        	
+        	
+        	
             @Override
             public void mouseClicked(MouseEvent e) {
                 JList list = (JList)e.getSource();
@@ -125,7 +130,7 @@ public class AutoCompleter implements DocumentListener, CaretListener{
         } else {
             for (start = pos-1; start >= 0; start--) {
             	if(start<content.length() && start>=0) {
-            		System.out.println("22222222222222");
+
                 	System.out.println(content.length());
                     if (Character.isWhitespace(content.charAt(start))) {
                         break;
@@ -148,9 +153,7 @@ public class AutoCompleter implements DocumentListener, CaretListener{
     void detachFromSource(){
         this.suggestionPane.dispose();
         this.source.removeCaretListener(this);
-        this.source.getDocument().removeDocumentListener(this);
-
-
+        this.source.getDocument().removeDocumentListener(this); 
     }
 
     /**
@@ -161,7 +164,8 @@ public class AutoCompleter implements DocumentListener, CaretListener{
     private static ArrayList<String> prefixSearcher(String search) {
         ArrayList<String> results = new ArrayList<>();
         for(String in : ExtensionState.getInstance().getKeywords()) {
-            if( !in.toLowerCase().equals(search.trim()) && in.toLowerCase().startsWith(search.trim()) ) {
+        	if( !in.toLowerCase().equals(search.trim()) && in.toLowerCase().contains(search.trim()) ) {
+//            if( !in.toLowerCase().equals(search.trim()) && in.toLowerCase().startsWith(search.trim()) ) {
                 results.add(in);
             }
         }
@@ -178,7 +182,7 @@ public class AutoCompleter implements DocumentListener, CaretListener{
             backspaceMode = false;
             if (Character.isWhitespace(this.source.getText().charAt(pos))) {
                 suggestionPane.setVisible(false);
-                System.out.println("5555555555555555555");
+
             } else {
                 checkForCompletions();
             }
@@ -238,13 +242,13 @@ public class AutoCompleter implements DocumentListener, CaretListener{
         String prefix = content.substring(start + 1);
         ExtensionState.getInstance().getCallbacks().printOutput("Searching for " + prefix);
         if (prefix.trim().length() == 0 || prefix.contains(":") || prefix.trim().length() == 1) {
-        	System.out.println("333333333333333");
+
             suggestionPane.setVisible(false);
         } else {
             ArrayList<String> matches = prefixSearcher(prefix.toLowerCase());
             ExtensionState.getInstance().getCallbacks().printOutput(Arrays.toString(matches.toArray()));
             if (matches.size() != 0) {
-            	System.out.println("4444444444444");
+  
                 SwingUtilities.invokeLater(
                         new CompletionTask(matches));
             } else {
@@ -271,8 +275,10 @@ public class AutoCompleter implements DocumentListener, CaretListener{
         @Override
         public void run() {
             suggestionPane.setVisible(true);
-            suggestionPane.setAlwaysOnTop (true);
-//            suggestionPane.set
+            suggestionPane.toFront();
+//            suggestionPane.requestFocus();
+//            suggestionPane.setState(Frame.NORMAL);
+//            suggestionPane.setAlwaysOnTop (true);
         }
     }
 
