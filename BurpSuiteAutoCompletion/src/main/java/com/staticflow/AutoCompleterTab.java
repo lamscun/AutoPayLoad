@@ -1,0 +1,142 @@
+package com.staticflow;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.util.ArrayList;
+
+class AutoCompleterTab extends JPanel {
+
+    private enum MODE {
+        DELETE,
+        ADD
+    }
+
+    private DefaultListModel<String> listerModel;
+    private JButton addNewKeyword;
+    private JTextField newKeywordField;
+    private MODE currentMode = MODE.ADD;
+    private String currentlyEdittingCompletion;
+    public JTextField textFileName;
+    AutoCompleterTab() {
+        this.initTab();
+    }
+    
+    void addKeywordToList(String keyword) {
+        listerModel.addElement(keyword);
+    }
+//    public String getFileName() {
+//    	return textFileName.getText();
+//    }
+    private void initTab(){
+        GridBagLayout gbl_mainPane = new GridBagLayout();
+        gbl_mainPane.columnWeights = new double[]{1.0, 0.0};
+        JPanel mainPane = new JPanel(gbl_mainPane);
+        GridBagConstraints c = new GridBagConstraints();
+        c.insets = new Insets(0, 0, 5, 0);
+        GridBagConstraints c1 = new GridBagConstraints();
+        c1.insets = new Insets(0, 0, 0, 5);
+        c1.fill = GridBagConstraints.HORIZONTAL;
+        GridBagConstraints c2 = new GridBagConstraints();
+        c2.anchor = GridBagConstraints.SOUTH;
+        listerModel = new DefaultListModel<>();
+        JList<String> lister = new JList<>(listerModel);
+        lister.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                JList list = (JList)e.getSource();
+                if (e.getClickCount() == 1) {
+                    currentMode = MODE.DELETE;
+                    addNewKeyword.setText("Delete");
+                    int index = list.locationToIndex(e.getPoint());
+                    currentlyEdittingCompletion = listerModel.elementAt(index);
+                    newKeywordField.setText(currentlyEdittingCompletion);
+
+                }
+            }
+        });
+        JScrollPane scroller = new JScrollPane(lister);
+        setLayout(new BorderLayout());
+        c.weighty = 0.9;
+        c.anchor = GridBagConstraints.NORTH;
+        c.fill = GridBagConstraints.BOTH;
+        c.gridx = 0;
+        c.gridwidth = 2;
+        c.gridy = 0;
+        mainPane.add(scroller,c);
+        
+        textFileName = new JTextField();
+        String userDirectory = new File("").getAbsolutePath();
+        textFileName.setText(userDirectory+"/payloads.txt");
+        GridBagConstraints gbc_textFileName = new GridBagConstraints();
+        gbc_textFileName.insets = new Insets(0, 0, 5, 5);
+        gbc_textFileName.fill = GridBagConstraints.HORIZONTAL;
+        gbc_textFileName.gridx = 0;
+        gbc_textFileName.gridy = 1;
+        mainPane.add(textFileName, gbc_textFileName);
+        textFileName.setColumns(10);
+        
+        JButton btnLoadFile = new JButton("Load/Reload File");
+        btnLoadFile.addMouseListener(new MouseAdapter() {
+        	@Override
+        	public void mouseClicked(MouseEvent e) {
+        		listerModel.clear();
+        		ExtensionState.getInstance().getKeywords().clear();
+				ExtensionState ext_state = new ExtensionState();
+//				ArrayList<String> keywords = new ArrayList<>();
+//				ext_state.keywords = ext_state.setKeyWordsFromFile(ExtensionState.getInstance().filePath);
+				 System.out.println("File name: ");
+				 System.out.println(getFileName());
+				ext_state.keywords = ext_state.setKeyWordsFromFile(getFileName());
+		        for(String keyword : ext_state.keywords){
+//		        	listerModel.addElement(keyword);
+//		        	ext_state.getAutoCompleterTab().addKeywordToList(keyword);
+		        	ExtensionState.getInstance().getKeywords().add(keyword.trim());
+	                listerModel.addElement(keyword.trim());
+		        }
+        	}
+        });
+        GridBagConstraints gbc_btnLoadFile = new GridBagConstraints();
+        gbc_btnLoadFile.insets = new Insets(0, 0, 5, 0);
+        gbc_btnLoadFile.gridx = 1;
+        gbc_btnLoadFile.gridy = 1;
+        mainPane.add(btnLoadFile, gbc_btnLoadFile);
+        c1.weighty = 0.1;
+        c1.anchor = GridBagConstraints.SOUTH;
+        c1.gridwidth = 1;
+        c1.gridx = 0;
+        c1.gridy = 2;
+        c1.weightx = 0.9;
+        newKeywordField = new JTextField(50);
+        mainPane.add(newKeywordField,c1);
+        c2.gridx = 1;
+        c2.gridwidth = 1;
+        c2.weightx = 0.1;
+        c2.gridy = 2;
+        addNewKeyword = new JButton("Add");
+        addNewKeyword.addActionListener(e -> {
+            if (currentMode == MODE.ADD) {
+                ExtensionState.getInstance().getKeywords().add(newKeywordField.getText().trim());
+                listerModel.addElement(newKeywordField.getText().trim());
+            } else if (currentMode == MODE.DELETE) {
+                ExtensionState.getInstance().getKeywords().remove(newKeywordField.getText().trim());
+                listerModel.removeElement(newKeywordField.getText().trim());
+            }
+            currentMode = MODE.ADD;
+            addNewKeyword.setText("Add");
+            newKeywordField.setText("");
+            currentlyEdittingCompletion = "";
+
+        });
+        mainPane.add(addNewKeyword,c2);
+        add(mainPane,BorderLayout.CENTER);
+
+    }
+
+	public String getFileName() {
+		// TODO Auto-generated method stub
+		return textFileName.getText();
+	}
+}
