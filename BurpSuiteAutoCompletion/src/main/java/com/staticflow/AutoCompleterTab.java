@@ -68,8 +68,13 @@ class AutoCompleterTab extends JPanel {
         mainPane.add(scroller,c);
         
         textFileName = new JTextField();
-        String userDirectory = new File("").getAbsolutePath();
-        textFileName.setText(userDirectory+"/payloads.txt");
+        // create new file if not exist file 
+               
+    	
+//    	System.out.println("filePath:"+  ExtensionState.getInstance().filePath);        
+//        String userDirectory = new File("").getAbsolutePath();
+        textFileName.setText("/payloads.txt");
+//    	textFileName.setText(ExtensionState.getInstance().filePath);
         GridBagConstraints gbc_textFileName = new GridBagConstraints();
         gbc_textFileName.insets = new Insets(0, 0, 5, 5);
         gbc_textFileName.fill = GridBagConstraints.HORIZONTAL;
@@ -96,6 +101,7 @@ class AutoCompleterTab extends JPanel {
 		        	ExtensionState.getInstance().getKeywords().add(keyword.trim());
 	                listerModel.addElement(keyword.trim());
 		        }
+		        ExtensionState.getInstance().setUserOptions_payloadPath(getFileName());
         	}
         });
         GridBagConstraints gbc_btnLoadFile = new GridBagConstraints();
