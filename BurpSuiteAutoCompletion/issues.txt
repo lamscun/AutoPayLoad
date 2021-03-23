@@ -1,5 +1,9 @@
 1. cái khung popup 1 khi đã lên là ko tắt dc trừ khi chọn 1 giá trị
-2. đang search theo start with, cái này hơi bất tiện nếu a chỉ muốn search 1 cái j đó bên trong payload
+
 3. khung popup hiện ở cuối màn hình là bị mất đuôi list, cái này e có thể cho cái list hiện phía trên vị trí dc click chắc khắc phục dc
 4. có thể cho phím tắt để tự động hiện full list rồi chọn ko (đỡ phải gõ cai pattern cụ thể nào đó)
-5. cái đường dẫn payload e fix cứng mỗi lần bật lên hả e. có lưu vào user option dc ko
+
+
+
+- Fixed 5. cái đường dẫn payload e fix cứng mỗi lần bật lên hả e. có lưu vào user option dc ko
+- Fixed 2. đang search theo start with, cái này hơi bất tiện nếu a chỉ muốn search 1 cái j đó bên trong payload

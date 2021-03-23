@@ -11,6 +11,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 
 /**
@@ -26,9 +30,10 @@ public class AutoCompleter implements DocumentListener, CaretListener{
     //Stateflag to determine if the last action was a backspace
     private boolean backspaceMode;
     //The suggestion frame which holds the current autocomplete candidates
-    private JFrame suggestionPane;
+    public JFrame suggestionPane;
     //List model to hold the candidate autocompletions
-    private DefaultListModel<String> suggestionsModel = new DefaultListModel<>();
+    public DefaultListModel<String> suggestionsModel = new DefaultListModel<>();
+    JPanel pane = new JPanel(new BorderLayout());
     //The content of the source document we will be replacing
     private String content;
     private enum MODE {
@@ -36,6 +41,8 @@ public class AutoCompleter implements DocumentListener, CaretListener{
         COMPLETION
     }
     private MODE mode = MODE.INSERT;
+    private int iframe_width = 350;
+    private int iframe_height = 250;
 
     /**
      * This listener follows the caret and updates where we should draw the suggestions box
@@ -53,8 +60,7 @@ public class AutoCompleter implements DocumentListener, CaretListener{
             suggestionPane.setLocation(np);
         }
     }
-
-
+    
     /**
      * Initializes the suggestion pane and attaches our listeners
      * @param s the source to provide autocompletions for
@@ -66,11 +72,17 @@ public class AutoCompleter implements DocumentListener, CaretListener{
         
         suggestionPane = new JFrame();
         
-        suggestionPane.setSize(350,250);
+        
+        suggestionPane.setSize(iframe_width,iframe_height);
+        suggestionPane.setTitle("List Suggestion");
         suggestionPane.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         suggestionPane.setUndecorated(true);
         suggestionPane.setAutoRequestFocus(false);
-        JPanel pane = new JPanel(new BorderLayout());
+//        
+        suggestionPane.setLocationRelativeTo(null);
+        suggestionPane.setLocation(700,700);
+        
+        
         JList<String> suggestions = new JList<>(suggestionsModel);
         JScrollPane scroller = new JScrollPane(suggestions);
         pane.add(scroller, BorderLayout.CENTER);
@@ -248,7 +260,31 @@ public class AutoCompleter implements DocumentListener, CaretListener{
             ArrayList<String> matches = prefixSearcher(prefix.toLowerCase());
             ExtensionState.getInstance().getCallbacks().printOutput(Arrays.toString(matches.toArray()));
             if (matches.size() != 0) {
-  
+            	System.out.println("MAtche Sting!!!!!!!!11");
+            	Point p = MouseInfo.getPointerInfo().getLocation();
+            	int pointer_x = p.x;
+            	int pointer_y = p.y;
+            	System.out.println("X: "+ pointer_x + " Y: "+ pointer_y);
+            	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+          	    int screen_height = screenSize.height;
+      		    int screen_width = screenSize.width;    	
+            	
+      		    System.out.println("W: "+ screen_width + " H: "+ screen_height);
+      		    
+      		    if(pointer_y > (screen_height-iframe_height) ) {
+//            	  
+      		    	System.out.println("Set net location");	
+//        		  suggestionPane.setLocation(pointer_x,pointer_y-iframe_height);
+      		    	
+      		    	suggestionPane.setLocationRelativeTo(suggestionPane);
+//      		    	suggestionPane.setLocation(700,700);
+//      		    	pane.setLocation(700,700);
+//      		    	suggestionPane.setSize(700,700);
+//						
+            	} else {
+            		suggestionPane.setSize(350,250);
+            	}
+            	
                 SwingUtilities.invokeLater(
                         new CompletionTask(matches));
             } else {
@@ -276,6 +312,7 @@ public class AutoCompleter implements DocumentListener, CaretListener{
         public void run() {
             suggestionPane.setVisible(true);
             suggestionPane.toFront();
+            System.out.println("Run Run!!!!!!!!!!!11");
 //            suggestionPane.requestFocus();
 //            suggestionPane.setState(Frame.NORMAL);
 //            suggestionPane.setAlwaysOnTop (true);

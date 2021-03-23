@@ -22,7 +22,7 @@ class ExtensionState {
     //Burp callbacks
     private IBurpExtenderCallbacks callbacks;
     //UI panel
-    private final AutoCompleterTab autoCompleterTab;
+    public final AutoCompleterTab autoCompleterTab;
     public String filePath = "D:\\App\\burpsuite_pro_v2.0.11beta1\\autocomplete\\BurpSuiteAutoCompletion\\payloads.txt";
     public String userDirectory = new File("").getAbsolutePath();
     //Starting List of Header keywords
