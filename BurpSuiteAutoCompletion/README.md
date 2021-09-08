@@ -1,6 +1,8 @@
 # BurpSuiteAutoCompletion
-This extension enables autocompletion within BurpSuite Repeater/Intruder tabs.
 
+Edited by me!!
+
+This extension enables autocompletion within BurpSuite Repeater/Intruder tabs.
 
 Created at the request of this tweet: https://twitter.com/Hogarth45_/status/1366432589733625860
 
@@ -18,5 +20,3 @@ It comes prepackaged with the great list of headers from [SecLists](https://raw.
 \* I say new because if the Reapter/Intruder tab already exists it cannot be hooked. Simply recreate the tab to enable AutoCompletion.
 
 
-# DEMO
-https://twitter.com/_StaticFlow_/status/1367304795342721024
