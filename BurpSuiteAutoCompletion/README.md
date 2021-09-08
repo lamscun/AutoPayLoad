@@ -1,5 +1,5 @@
 # BurpSuiteAutoCompletion
-This exention enables autocompletion within BurpSuite Repeater/Intruder tabs.
+This extension enables autocompletion within BurpSuite Repeater/Intruder tabs.
 
 
 Created at the request of this tweet: https://twitter.com/Hogarth45_/status/1366432589733625860
